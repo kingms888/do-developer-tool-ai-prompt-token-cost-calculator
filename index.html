@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>AI Token & Cost Calculator · Etsy Seller Tool</title>
+  <meta name="description" content="Free AI prompt token & cost calculator for Claude, GPT, DeepSeek. Compare costs, estimate listing SEO, and bulk-prepare CSV/JSON for Shopify. Built for Etsy sellers & developers.">
+  <meta name="keywords" content="ai token cost calculator, etsy listing seo checker, csv to shopify bulk listing, developer tools, etsy sellers, csv/json tools, developer tool: ai prompt token & cost calculator">
+  <meta name="author" content="PromptCost.dev (demo)">
+  <meta property="og:title" content="AI Prompt Token & Cost Calculator – Compare Claude, GPT, DeepSeek">
+  <meta property="og:description" content="Instant token count, estimated cost across models, and cost comparison chart. Built for Etsy sellers & developers.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://promptcost.example.com">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Prompt Token & Cost Calculator">
+  <meta name="twitter:description" content="Compare token costs across Claude, GPT, DeepSeek. Free tool for Etsy sellers.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: #f6f9fc;
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #1a2634;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+      padding: 24px 20px 32px;
+      margin: 8px 0 24px;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-bottom: 8px;
+    }
+    h1 small {
+      font-size: 0.9rem;
+      font-weight: 400;
+      background: #eef2f6;
+      padding: 4px 12px;
+      border-radius: 40px;
+      color: #2c3e50;
+    }
+    .subhead {
+      color: #4a5b6e;
+      margin-bottom: 24px;
+      border-left: 4px solid #3b82f6;
+      padding-left: 16px;
+      font-size: 1rem;
+      background: #f0f5fe;
+      border-radius: 0 12px 12px 0;
+      padding: 10px 16px;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    @media (min-width: 700px) {
+      .tool-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 20px 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e9edf2;
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border: 1px solid #d0d8e3;
+      border-radius: 20px;
+      padding: 16px 18px;
+      font-size: 0.95rem;
+      resize: vertical;
+      background: #fafcff;
+      transition: 0.15s;
+      line-height: 1.5;
+    }
+    textarea:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      background: #f2f6fb;
+      padding: 14px 16px;
+      border-radius: 40px;
+      margin: 16px 0 12px;
+      font-weight: 500;
+    }
+    .stat-row span {
+      background: white;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .model-costs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 12px 0 8px;
+    }
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #f8fafd;
+      border-radius: 30px;
+      font-size: 0.95rem;
+    }
+    .cost-item .model {
+      font-weight: 500;
+    }
+    .cost-item .price {
+      font-weight: 600;
+      color: #0b2b4a;
+    }
+    .badge {
+      background: #dbeafe;
+      color: #1e4b8a;
+      padding: 2px 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .chart-container {
+      margin: 20px 0 8px;
+      background: #f9fbfe;
+      border-radius: 20px;
+      padding: 12px 6px 6px;
+    }
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      justify-content: space-around;
+      height: 110px;
+      padding: 0 4px;
+    }
+    .bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .bar {
+      width: 100%;
+      max-width: 60px;
+      background: #3b82f6;
+      border-radius: 12px 12px 4px 4px;
+      transition: height 0.2s;
+      min-height: 4px;
+      height: 20px;
+    }
+    .bar-label {
+      font-size: 0.7rem;
+      margin-top: 6px;
+      font-weight: 500;
+      color: #2c3e50;
+      text-align: center;
+    }
+    .bar-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #1e293b;
+    }
+    .placeholder-ad {
+      background: #f0f4fa;
+      border-radius: 20px;
+      padding: 12px 16px;
+      margin: 24px 0 12px;
+      font-size: 0.9rem;
+      color: #2c3e50;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px dashed #b9c8dd;
+    }
+    .placeholder-ad span {
+      opacity: 0.7;
+    }
+    .affiliate-resources {
+      background: #f1f5f9;
+      border-radius: 24px;
+      padding: 16px 20px;
+      margin: 24px 0 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .affiliate-resources a {
+      color: #1e4b8a;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid #b3c9e5;
+    }
+    .affiliate-resources a:hover {
+      color: #0b2b4a;
+    }
+    .privacy-note {
+      font-size: 0.75rem;
+      color: #5e6f82;
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      justify-content: center;
+      margin: 8px 0 4px;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #cdd9e9;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      cursor: default;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.6rem; }
+      .container { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>
+      ⚡ Token & Cost Calculator
+      <small>for Etsy sellers & devs</small>
+    </h1>
+    <div class="subhead">
+      🔍 Paste any prompt → see token count, model costs (Claude, GPT, DeepSeek) + comparison chart
+    </div>
+  </header>
+
+  <div class="tool-grid">
+    <!-- LEFT: input & token count -->
+    <div class="card">
+      <h2><span>📝</span> Prompt input</h2>
+      <textarea id="promptInput" placeholder="Paste your AI prompt, listing description, or CSV/JSON sample …">Optimize my Etsy listing for 'vintage ceramic mug' using SEO keywords, include dimensions and gift idea. Also generate a short CSV for Shopify bulk upload.</textarea>
+      <div class="stat-row">
+        <span>🔤 Tokens</span>
+        <span id="tokenDisplay">~ 42</span>
+      </div>
+      <div class="model-costs" id="costList">
+        <div class="cost-item"><span class="model">Claude 3.5 Sonnet</span> <span class="price" id="claudeCost">$0.0021</span></div>
+        <div class="cost-item"><span class="model">GPT-4o</span> <span class="price" id="gptCost">$0.0038</span></div>
+        <div class="cost-item"><span class="model">DeepSeek-V2</span> <span class="price" id="deepseekCost">$0.0014</span></div>
+      </div>
+      <div class="flex-row">
+        <span class="badge">⚡ per 1K tokens</span>
+        <span class="badge">📊 input only</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: chart + extra tools -->
+    <div class="card">
+      <h2><span>📊</span> Cost comparison</h2>
+      <div class="chart-container">
+        <div class="chart-bars" id="chartBars">
+          <div class="bar-wrapper"><div class="bar-value" id="barVal1">$0.0021</div><div class="bar" id="bar1" style="height:52px; background:#3b82f6;"></div><div class="bar-label">Claude</div></div>
+          <div class="bar-wrapper"><div class="bar-value" id="barVal2">$0.0038</div><div class="bar" id="bar2" style="height:88px; background:#2563eb;"></div><div class="bar-label">GPT-4o</div></div>
+          <div class="bar-wrapper"><div class="bar-value" id="barVal3">$0.0014</div><div class="bar" id="bar3" style="height:34px; background:#0f4c81;"></div><div class="bar-label">DeepSeek</div></div>
+        </div>
+      </div>
+      <div style="margin: 8px 0 4px; font-size:0.85rem; color:#3b5a7a; background:#eaf1fb; padding:6px 14px; border-radius:30px;">
+        💡 <strong>Etsy SEO tip:</strong> Use keywords from your prompt to boost listing visibility.
+      </div>
+      <div class="placeholder-ad">
+        <span>📢 <strong>Shopify CSV tool</strong> – bulk upload ready</span>
+        <span style="background:#d4e2f7; padding:2px 12px; border-radius:30px;">Ad · CSVtoShopify</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- affiliate / resource section -->
+  <div class="affiliate-resources">
+    <span>🔗 <strong>Resources for Etsy sellers</strong></span>
+    <span>
+      <a href="#">CSV/JSON converter</a> · <a href="#">SEO checker</a> · <a href="#">Bulk listing tool</a>
+      <span style="opacity:0.5; margin-left:8px;">(affiliate)</span>
+    </span>
+  </div>
+
+  <!-- privacy + metrics -->
+  <div class="privacy-note">
+    <div class="footer-links">
+      <span>🔒 No credentials collected</span>
+      <span>📊 Events may be counted anonymously for product improvement</span>
+    </div>
+    <p style="margin-top: 8px;">⚙️ <code>reportEvent(name, payload)</code> sends to endpoint if configured.</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----- TOOL CORE -----
+    const promptInput = document.getElementById('promptInput');
+    const tokenDisplay = document.getElementById('tokenDisplay');
+    const claudeCost = document.getElementById('claudeCost');
+    const gptCost = document.getElementById('gptCost');
+    const deepseekCost = document.getElementById('deepseekCost');
+    const bar1 = document.getElementById('bar1');
+    const bar2 = document.getElementById('bar2');
+    const bar3 = document.getElementById('bar3');
+    const barVal1 = document.getElementById('barVal1');
+    const barVal2 = document.getElementById('barVal2');
+    const barVal3 = document.getElementById('barVal3');
+
+    // approximate token count (char-based, ~4 chars per token)
+    function estimateTokens(text) {
+      if (!text || text.trim() === '') return 0;
+      // simple estimation: 1 token ~ 4 characters (english)
+      const cleaned = text.trim();
+      const charCount = cleaned.length;
+      return Math.max(1, Math.round(charCount / 4));
+    }
+
+    // model pricing per 1K tokens (input)
+    const PRICING = {
+      claude: 0.003,   // $0.003 per 1K tokens (Claude 3.5 Sonnet)
+      gpt4o: 0.005,    // $0.005 per 1K tokens (GPT-4o)
+      deepseek: 0.0014 // $0.0014 per 1K tokens (DeepSeek-V2)
+    };
+
+    function updateCosts() {
+      const text = promptInput.value;
+      const tokenCount = estimateTokens(text);
+      tokenDisplay.textContent = `~ ${tokenCount}`;
+
+      // calculate cost (dollars)
+      const tokensK = tokenCount / 1000;
+      const claudeVal = tokensK * PRICING.claude;
+      const gptVal = tokensK * PRICING.gpt4o;
+      const deepseekVal = tokensK * PRICING.deepseek;
+
+      claudeCost.textContent = `$${claudeVal.toFixed(4)}`;
+      gptCost.textContent = `$${gptVal.toFixed(4)}`;
+      deepseekCost.textContent = `$${deepseekVal.toFixed(4)}`;
+
+      // update chart bars (max height 100px, scale relative to highest)
+      const maxVal = Math.max(claudeVal, gptVal, deepseekVal, 0.0001);
+      const maxHeight = 100;
+      const h1 = (claudeVal / maxVal) * maxHeight;
+      const h2 = (gptVal / maxVal) * maxHeight;
+      const h3 = (deepseekVal / maxVal) * maxHeight;
+
+      bar1.style.height = Math.max(6, h1) + 'px';
+      bar2.style.height = Math.max(6, h2) + 'px';
+      bar3.style.height = Math.max(6, h3) + 'px';
+
+      barVal1.textContent = `$${claudeVal.toFixed(4)}`;
+      barVal2.textContent = `$${gptVal.toFixed(4)}`;
+      barVal3.textContent = `$${deepseekVal.toFixed(4)}`;
+
+      // report anonymous event (if endpoint configured)
+      reportEvent('token_calc_update', { tokenEstimate: tokenCount, modelCosts: { claude: claudeVal, gpt: gptVal, deepseek: deepseekVal } });
+    }
+
+    // ----- REPORT EVENT (anonymous, no PII) -----
+    window.reportEvent = function(name, payload) {
+      if (typeof window.ORGANISM_METRICS_ENDPOINT === 'string' && window.ORGANISM_METRICS_ENDPOINT.length > 0) {
+        try {
+          const body = JSON.stringify({ event: name, payload: payload || {}, timestamp: new Date().toISOString() });
+          // use sendBeacon or fetch (no credentials)
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(window.ORGANISM_METRICS_ENDPOINT, body);
+          } else {
+            fetch(window.ORGANISM_METRICS_ENDPOINT, { method: 'POST', body: body, keepalive: true, credentials: 'omit' });
+          }
+        } catch (e) {
+          // silently fail – no tracking required
+        }
+      }
+    };
+
+    // initial update
+    updateCosts();
+
+    // event listeners
+    promptInput.addEventListener('input', updateCosts);
+
+    // also expose for debugging
+    window.__testUpdate = updateCosts;
+
+    // demo: set endpoint example (not active unless configured)
+    // window.ORGANISM_METRICS_ENDPOINT = 'https://example.com/metrics'; // (uncomment to test)
+  })();
+</script>
+
+<!-- invisible note: endpoint placeholder -->
+<script>
+  // If you want to test, set endpoint (no actual tracking without config)
+  // window.ORGANISM_METRICS_ENDPOINT = '';  // leave empty or set to your endpoint
+</script>
+
+<!-- small extra: ad placeholder visible -->
+<div style="max-width:1100px; width:100%; margin: 8px auto 0; text-align:center; font-size:0.75rem; color:#6f7e91;">
+  <span>⚡ Developer tool · AI Prompt Token & Cost Calculator · Etsy sellers & CSV/JSON tools</span>
+</div>
+
+<section data-organism-discovery="hub" style="margin:32px auto 20px;max-width:1040px;padding:16px;border-top:1px solid #d9e2ec;color:#475569;font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <strong style="display:block;color:#0f172a;margin-bottom:6px">More free browser tools</strong>
+  <p style="margin:0 0 8px">This page is part of an autonomous micro-tool network. Explore the live tool directory and related utilities.</p>
+  <p style="margin:0"><a href="https://kingms888.github.io/do-digital-organism-index/" style="color:#0f766e;font-weight:700">Open the tool directory</a> </p>
+</section>
+</body>
+</html>
